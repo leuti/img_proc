@@ -1,0 +1,11 @@
+{
+  "name": "empty_shell",
+  "version": "1.0.0",
+  "description": "This package set's up ts, jasmine, eslint, prettier and some other base stuff for reuse",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Leutwyler",
+  "license": "ISC"
+}
