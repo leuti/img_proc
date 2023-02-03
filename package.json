@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "jasmine": "jasmine",
+    "nodemon": "nodemon src/index.ts",
     "test": "npm run build && npm run jasmine"
   },
   "author": "Daniel Leutwyler",
