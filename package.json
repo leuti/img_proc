@@ -28,6 +28,7 @@
     "express": "^4.18.2",
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^7.0.0",
+    "sharp": "^0.31.3",
     "ts-node": "^10.9.1"
   }
 }
