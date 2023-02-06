@@ -4,16 +4,18 @@ import path from 'path';
 import resize from '../util/utils';
 
 const routes: Router = express.Router();
-// const thumbUrl = 'http://localhost:3000/Abfahrt.jpg';
+// const thumbSource = 'http://localhost:3000/Abfahrt.jpg';
 
 routes.get('/images', (req, res) => {
   const fileName = <string>req.query.filename;
   const width = req.query.width;
   const height = req.query.height;
+  const thumbName = path.parse(fileName).name + '_' + width + '_' + height + '.jpg';
   
   console.log(`filename: ${fileName}`);
   console.log(`width: ${width}`);
   console.log(`height: ${height}`);
+  console.log(`baseUrl: ${req.baseUrl}`);
 
   // Error handling
   if (!fileName) {
@@ -31,16 +33,17 @@ routes.get('/images', (req, res) => {
   } else {
     // all provided params are OK
     console.log('All params are OK')
-    const fullUrl = path.join(__dirname, '../../assets/full/') + fileName;
-    const thumbUrl = path.join(__dirname, '../../assets/thumb/') + path.parse(fileName).name + '_thumb.jpg';
-
+    const fullSource = path.join(__dirname, '../../assets/full/') + fileName;
+    const thumbSource = path.join(__dirname, '../../assets/thumb/') + thumbName;
+    //const thumbUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const thumbUrl = req.protocol + '://' + req.get('host') + '/assets/thumb/' + thumbName;
     
-    console.log(`path: ${fullUrl}`)
+    console.log(`path: ${fullSource} - thumbUrl: ${thumbUrl}`);
 
     //  Check if requested file exists as thumb
-    fs.stat(thumbUrl).then(() => {
+    fs.stat(thumbSource).then(() => {
       // if found, the the thumb is directly returned
-      console.log(`thumb found at ${thumbUrl}`)
+      console.log(`thumb found at ${thumbSource}`)
       const returnHtml = `<!DOCTYPE html>
             <html>
               <head>
@@ -59,10 +62,22 @@ routes.get('/images', (req, res) => {
 
         console.log(`error searching thumb ${error}`);
         // first we check if the requested image exists in full folder
-        fs.stat(fullUrl).then(() => {
-          console.log(`File found: ${fullUrl}`);
+        fs.stat(fullSource).then(() => {
+          console.log(`File found: ${fullSource}`);
           // resize full image and store in thumb folder
-          resize(fullUrl, thumbUrl);
+          resize(fullSource, thumbSource);
+          const returnHtml = `<!DOCTYPE html>
+            <html>
+              <head>
+                <title>Example Page</title>
+              </head>
+              <body>
+                <h1>Hello Image</h1>
+                <img src="${thumbUrl}" alt="Thumb of requested image">
+              </body>
+            </html>
+            `
+      res.send(returnHtml);
         })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);

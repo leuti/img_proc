@@ -1,15 +1,15 @@
 import sharp from 'sharp';
 
-const resize = function (fullUrl: string, thumbUrl: string): void {
+const resize = function (fullSource: string, thumbSource: string): void {
   
-  sharp(fullUrl)
+  sharp(fullSource)
       .resize({
         width: 300,
         height: 200,
         fit: sharp.fit.cover,
         position: sharp.strategy.entropy
       })
-      .toFile(thumbUrl)
+      .toFile(thumbSource)
       .then(() => {
         console.log('Resized image created'); 
       })
