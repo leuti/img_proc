@@ -33,40 +33,30 @@ routes.get('/images', (req, res) => {
   } else {
     // all provided params are OK
     console.log('All params are OK')
-    const fullSource = path.join(__dirname, '../../assets/full/') + fileName;
-    const thumbSource = path.join(__dirname, '../../assets/thumb/') + thumbName;
+    const fullSource = path.join(__dirname, '../../assets/full/', fileName);
+    const thumbSource = path.join(__dirname, '../../assets/thumb/', thumbName);
+    const host = req.get('host') || ''
     //const thumbUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    const thumbUrl = req.protocol + '://' + req.get('host') + '/assets/thumb/' + thumbName;
+    const thumbUrl = path.join(req.protocol,'://', host , '/assets/thumb/', thumbName);
     
-    console.log(`path: ${fullSource} - thumbUrl: ${thumbUrl}`);
+    console.log(`path: ${fullSource}`); 
+    console.log(`thumbUrl: ${thumbUrl}`);
 
     //  Check if requested file exists as thumb
     fs.stat(thumbSource).then(() => {
       // if found, the the thumb is directly returned
-      console.log(`thumb found at ${thumbSource}`)
-      const returnHtml = `<!DOCTYPE html>
-            <html>
-              <head>
-                <title>Example Page</title>
-              </head>
-              <body>
-                <h1>Hello Image</h1>
-                <img src="${thumbUrl}" alt="Thumb of requested image">
-              </body>
-            </html>
-            `
-      res.send(returnHtml);
+      console.log(`thumb found at ${thumbSource} - displaying existing thumb`)
+      res.sendFile(thumbSource);
     })
       // if not found, thumb needs to be generated
       .catch((error) => {
 
-        console.log(`error searching thumb ${error}`);
+        console.log('No thumb file existing');
         // first we check if the requested image exists in full folder
         fs.stat(fullSource).then(() => {
-          console.log(`File found: ${fullSource}`);
-          // resize full image and store in thumb folder
+          console.log('Full file found - generating thumb');
           resize(fullSource, thumbSource);
-          const returnHtml = `<!DOCTYPE html>
+          /*const returnHtml = `<!DOCTYPE html>
             <html>
               <head>
                 <title>Example Page</title>
@@ -77,7 +67,9 @@ routes.get('/images', (req, res) => {
               </body>
             </html>
             `
-      res.send(returnHtml);
+          res.send(returnHtml);
+          */
+          res.sendFile(thumbSource);
         })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);
