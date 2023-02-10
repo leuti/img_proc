@@ -55,21 +55,8 @@ routes.get('/images', (req, res) => {
         // first we check if the requested image exists in full folder
         fs.stat(fullSource).then(() => {
           console.log('Full file found - generating thumb');
-          resize(fullSource, thumbSource);
-          /*const returnHtml = `<!DOCTYPE html>
-            <html>
-              <head>
-                <title>Example Page</title>
-              </head>
-              <body>
-                <h1>Hello Image</h1>
-                <img src="${thumbUrl}" alt="Thumb of requested image">
-              </body>
-            </html>
-            `
-          res.send(returnHtml);
-          */
-          res.sendFile(thumbSource);
+          // Change this to a promise based call. Send thumb only when finished
+          resize(fullSource, thumbSource, res);
         })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);

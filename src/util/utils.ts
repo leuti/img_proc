@@ -1,21 +1,21 @@
 import sharp from 'sharp';
+import express from 'express';
 
-const resize = function (fullSource: string, thumbSource: string): void {
-  
-  sharp(fullSource)
+const resize = async function (fullSource: string, thumbSource: string, res: express.Response ): Promise<void> {
+  try {
+    await sharp(fullSource)
       .resize({
         width: 300,
         height: 200,
         fit: sharp.fit.cover,
         position: sharp.strategy.entropy
       })
-      .toFile(thumbSource)
-      .then(() => {
-        console.log('Resized image created'); 
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      .toFile(thumbSource);
+    console.log('Resized image created');
+    res.sendFile(thumbSource);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export default resize;
