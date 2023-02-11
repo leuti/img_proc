@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express, { Router, Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
 import resize from '../util/utils';
@@ -6,34 +6,38 @@ import resize from '../util/utils';
 const routes: Router = express.Router();
 // const thumbSource = 'http://localhost:3000/Abfahrt.jpg';
 
-routes.get('/images', (req, res) => {
-  const fileName = <string>req.query.filename;
-  const width = req.query.width;
-  const height = req.query.height;
-  const thumbName = path.parse(fileName).name + '_' + width + '_' + height + '.jpg';
+// Check if  params are provided and format is OK
+function checkParams(req:Request):boolean {
+  if (!req.query.fileName) {
+    throw new Error('File name not provided');
+  } else if (!req.query.width || typeof req.query.width === 'number') {
+    throw new Error('Target width not provided or not a number');
+  } else if (!req.query.height || typeof req.query.height === 'number') {
+    throw new Error('Target height not provided or not a number');
+  } else {
+    return true
+  }
+}
+
+routes.get('/images', (req:Request, res:Response) => {
+  const params = {
+    fileName: <string>req.query.filename,
+    width: req.query.width,
+    height: req.query.height
+  }
+  const thumbName = path.parse(params.fileName).name + '_' + params.width + '_' + params.height + '.jpg';
   
-  console.log(`filename: ${fileName}`);
-  console.log(`width: ${width}`);
-  console.log(`height: ${height}`);
+  console.log(`filename: ${params.fileName}`);
+  console.log(`width: ${params.width}`);
+  console.log(`height: ${params.height}`);
   console.log(`baseUrl: ${req.baseUrl}`);
 
   // Error handling
-  if (!fileName) {
-    console.log('File not provided')
-    res.status(500).send('Filename not provided')
-
-  } else if (!width || typeof width === 'number') {
-    console.log('Target width not provided or not a number')
-    res.status(500).send('Target width not provided or not a number')
-
-  } else if (!height || typeof height === 'number') {
-    console.log('Target height not provided or not a number')
-    res.status(500).send('Target height not provided or not a number')
-
-  } else {
-    // all provided params are OK
+  try {
+    checkParams(req)
+    // continue as all params are OK
     console.log('All params are OK')
-    const fullSource = path.join(__dirname, '../../assets/full/', fileName);
+    const fullSource = path.join(__dirname, '../../assets/full/', params.fileName);
     const thumbSource = path.join(__dirname, '../../assets/thumb/', thumbName);
     const host = req.get('host') || ''
     //const thumbUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -64,6 +68,9 @@ routes.get('/images', (req, res) => {
     
         console.error(`File not found: ${error}`);
       })
+  } catch (error) {
+    // return error to end point
+    res.status(500).send(error)
   }
 });
 
