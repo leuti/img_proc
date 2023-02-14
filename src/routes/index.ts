@@ -5,6 +5,10 @@ import utils from '../util/utils';
 
 const routes: Router = express.Router();
 
+routes.get('/', (req: Request, res: Response) => {
+  res.status(200).send('Welcome to the image processor');
+});
+
 routes.get('/images', (req: Request, res: Response) => {
   try {
     console.log('checking params');
@@ -62,6 +66,9 @@ routes.get('/images', (req: Request, res: Response) => {
           })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);
+            res
+              .status(400)
+              .send('Requested file not found; no thumb generated');
           });
 
         console.error(`File not found: ${error}`);

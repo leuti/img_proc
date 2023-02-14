@@ -18,7 +18,7 @@ const resize = async function (
       })
       .toFile(thumbSource);
     console.log('Resized image created');
-    res.sendFile(thumbSource);
+    res.status(200).sendFile(thumbSource);
   } catch (error) {
     console.error(error);
   }
