@@ -1,26 +1,10 @@
 import express, { Router, Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
-import resize from '../util/utils';
+import utils from '../util/utils';
 
 const routes: Router = express.Router();
-// const thumbSource = 'http://localhost:3000/Abfahrt.jpg';
 
-// Check if  params are provided and format is OK
-function validateParam(paramName: string, paramContent: string, type: string): boolean {
-  console.log(`Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`);
-  if (!paramContent) {
-    console.log(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
-    throw new Error(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
-  }
-  
-  if ( type === 'number' && isNaN((paramContent as unknown) as number) && isNaN(parseFloat(paramContent))) {
-    console.log(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
-    throw new Error(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
-  }
-  console.log(`Params OK`);
-  return true
-}
 
 routes.get('/images', (req:Request, res:Response) => {
   
@@ -35,9 +19,9 @@ routes.get('/images', (req:Request, res:Response) => {
     const thumbUrl = path.join(req.protocol,'://', req.get('host') || '' , '/assets/thumb/', thumbName); // external URL pointing pointing to requested thumb file
     
     // Valdiate the params
-    validateParam('filename', filename, 'string'); // Valdiate the filename param
-    validateParam('width', width, 'number'); // Valdiate the width param
-    validateParam('height', height, 'number') // validate the heigth
+    utils.validateParam('filename', filename, 'string'); // Valdiate the filename param
+    utils.validateParam('width', width, 'number'); // Valdiate the width param
+    utils.validateParam('height', height, 'number') // validate the heigth
 
     console.log('checking params completed without errors');
     
@@ -66,7 +50,7 @@ routes.get('/images', (req:Request, res:Response) => {
         fs.stat(fullSource).then(() => {
           console.log('Full file found - generating thumb');
           // Change this to a promise based call. Send thumb only when finished
-          resize(fullSource, thumbSource, res);
+          utils.resize(fullSource, thumbSource, res);
         })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);
@@ -75,14 +59,8 @@ routes.get('/images', (req:Request, res:Response) => {
         console.error(`File not found: ${error}`);
       })
   } catch (error) {
-    // return error to end point
-    //const errorMsg: unknown = error;
     const errorMsg: unknown = error;
-    // res.status(400).send('this is the error code')
-    // res.status(400).send(error as string)
-    // res.status(400).send(error)
     console.log(`====> error: ${errorMsg}`);
-    //res.status(400).send(errorMsg)
     res.status(400).send((errorMsg as { message: string }).message);
   }
 });

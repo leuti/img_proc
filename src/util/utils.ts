@@ -18,4 +18,20 @@ const resize = async function (fullSource: string, thumbSource: string, res: exp
   }
 }
 
-export default resize;
+// Check if  params are provided and format is OK
+const validateParam = function validateParam(paramName: string, paramContent: string, type: string): boolean {
+  console.log(`Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`);
+  if (!paramContent) {
+    console.log(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
+    throw new Error(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
+  }
+  
+  if ( type === 'number' && isNaN((paramContent as unknown) as number) && isNaN(parseFloat(paramContent))) {
+    console.log(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
+    throw new Error(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
+  }
+  console.log(`Params OK`);
+  return true
+}
+
+export default { resize, validateParam };
