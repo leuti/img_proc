@@ -1,4 +1,4 @@
-import express, { Router, Request, Response, RequestHandler } from 'express';
+import express, { Router, Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import path from 'path';
 import resize from '../util/utils';
@@ -10,60 +10,23 @@ const routes: Router = express.Router();
 function validateParam(paramName: string, paramContent: string, type: string): boolean {
   console.log(`Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`);
   if (!paramContent) {
-    console.log(`Param name ${paramName} not provided`);
-    throw new Error(`Param name ${paramName} not provided`);
+    console.log(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
+    throw new Error(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
   }
   
   if ( type === 'number' && isNaN((paramContent as unknown) as number) && isNaN(parseFloat(paramContent))) {
-    console.log(`Param name "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
-    throw new Error(`Param name ${paramName} not provided`);
+    console.log(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
+    throw new Error(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
   }
   console.log(`Params OK`);
   return true
 }
 
-/*
-function validateWidth(req: Request): void {
-  console.log(`Entered validateWidth function - width ${req.query.width}`);
-  const parsedWidth = String(req.query.width)
-  if (typeof parsedWidth === 'undefined' || !parsedWidth ) {
-    console.log('width not correctly ' + parsedWidth);
-    throw new Error('width not correctly provided: Must be number');
-  }
-  else
-    
-    if ( isNaN(parseFloat(parsedWidth))) {
-    throw new Error('Target width not a number');
-  }
-  else true
-}
-
-function validateHeight(req: Request): void {
-  console.log('Entered validateHeigth function');
-  if (!req.query.heigth) {
-    console.log('height missing' + req.query.heigth);
-    throw new Error('height not provided');
-  } else if (typeof req.query.width !== 'number') {
-    throw new Error('Target height not a number');
-  }
-  else true
-}
-*/
-
 routes.get('/images', (req:Request, res:Response) => {
   
   try {
-    /* interface QueryTypes {
-      filename: string,
-      width: string,
-      height: string
-    }*/
     console.log('checking params');
-    // const filename: RequestHandler<unknown, unknown, unknown, QueryTypes> = req.query.filename;  // filename provided by the endpoint
-    // const filename = <string>req.query.filename;  // filename provided by the endpoint
-    // const filename = req.query.filename as string;  // filename provided by the endpoint
     const filename = (req.query.filename as unknown) as string;  // filename provided by the endpoint
-
     const width = <string>req.query.width;  // width provided
     const height = <string>req.query.height;  // height provided
     const thumbName = path.parse(filename).name + '_' + width + '_' + height + '.jpg'; // target name of the thumb file
@@ -71,7 +34,7 @@ routes.get('/images', (req:Request, res:Response) => {
     const thumbSource = path.join(__dirname, '../../assets/thumb/', thumbName); // patch to thumb file
     const thumbUrl = path.join(req.protocol,'://', req.get('host') || '' , '/assets/thumb/', thumbName); // external URL pointing pointing to requested thumb file
     
-    // validateParam(filename) // Valdiate the filename param
+    // Valdiate the params
     validateParam('filename', filename, 'string'); // Valdiate the filename param
     validateParam('width', width, 'number'); // Valdiate the width param
     validateParam('height', height, 'number') // validate the heigth
@@ -113,8 +76,14 @@ routes.get('/images', (req:Request, res:Response) => {
       })
   } catch (error) {
     // return error to end point
-    console.log(`error: ${error}`);
-    res.status(400).send({ error: error })
+    //const errorMsg: unknown = error;
+    const errorMsg: unknown = error;
+    // res.status(400).send('this is the error code')
+    // res.status(400).send(error as string)
+    // res.status(400).send(error)
+    console.log(`====> error: ${errorMsg}`);
+    //res.status(400).send(errorMsg)
+    res.status(400).send((errorMsg as { message: string }).message);
   }
 });
 
