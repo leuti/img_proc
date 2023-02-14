@@ -5,7 +5,6 @@ import utils from '../util/utils';
 
 const routes: Router = express.Router();
 
-
 routes.get('/images', (req:Request, res:Response) => {
   
   try {
@@ -21,7 +20,7 @@ routes.get('/images', (req:Request, res:Response) => {
     // Valdiate the params
     utils.validateParam('filename', filename, 'string'); // Valdiate the filename param
     utils.validateParam('width', width, 'number'); // Valdiate the width param
-    utils.validateParam('height', height, 'number') // validate the heigth
+    utils.validateParam('height', height, 'number') // validate the height
 
     console.log('checking params completed without errors');
     
@@ -50,7 +49,7 @@ routes.get('/images', (req:Request, res:Response) => {
         fs.stat(fullSource).then(() => {
           console.log('Full file found - generating thumb');
           // Change this to a promise based call. Send thumb only when finished
-          utils.resize(fullSource, thumbSource, res);
+          utils.resize(fullSource, thumbSource, width, height, res);
         })
           .catch((error) => {
             console.error(`Error generating thumb: ${error}`);
