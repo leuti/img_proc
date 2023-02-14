@@ -1,6 +1,9 @@
 {
   "name": "empty_shell",
   "version": "1.0.0",
+  "prettier": {
+    "singleQuote": true
+  },
   "description": "This package set's up ts, jasmine, eslint, prettier and some other base stuff for reuse",
   "main": "src/index.ts",
   "scripts": {
@@ -8,7 +11,7 @@
     "jasmine": "jasmine",
     "lint": "eslint src --ext .ts",
     "nodemon": "nodemon src/index.ts",
-    "prettier": "prettier --check \"src/**/*.ts\"",
+    "prettier": "prettier --write \"src/**/*.ts\"",
     "test": "npm run build && npm run jasmine"
   },
   "author": "Daniel Leutwyler",

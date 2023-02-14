@@ -16,6 +16,6 @@ app.get('/thumb/:fileName', (req, res) => {
   res.sendFile(path.join(__dirname, 'assets', 'thumb', req.params.fileName));
 });
 
-app.listen(port, ()=> {
- console.log(`server started at localhost:${port}`)
+app.listen(port, () => {
+  console.log(`server started at localhost:${port}`);
 });
