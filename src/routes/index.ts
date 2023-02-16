@@ -45,8 +45,8 @@ routes.get('/images', (req: Request, res: Response) => {
             utils.resize(fullSource, thumbSource, width, height, res);
           })
           // if the resize returns an error, this catch is called
-          .catch((error) => {
-            res.status(400).send(error.message);
+          .catch(() => {
+            res.status(400).send(`Requested file ${filename} was not found.`);
           });
       });
   } catch (error) {
