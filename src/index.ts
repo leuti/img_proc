@@ -12,7 +12,7 @@ app.use('/api', routes);
 app.use(express.static(path.join(__dirname, 'assets')));
 
 app.get('/thumb/:fileName', (req, res) => {
-  console.log('in toplevel get');
+  // console.log('in toplevel get');
   res.sendFile(path.join(__dirname, 'assets', 'thumb', req.params.fileName));
 });
 

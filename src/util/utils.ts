@@ -17,7 +17,7 @@ const resize = async function (
         position: sharp.strategy.entropy,
       })
       .toFile(thumbSource);
-    console.log('Resized image created');
+    // console.log('Resized image created');
     res.status(200).sendFile(thumbSource);
   } catch (error) {
     console.error(error);
@@ -30,13 +30,9 @@ const validateParam = function validateParam(
   paramContent: string,
   type: string
 ): boolean {
-  console.log(
-    `Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`
-  );
+  // console.log(`Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`);
   if (!paramContent) {
-    console.log(
-      `Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`
-    );
+    // console.log(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
     throw new Error(
       `Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`
     );
@@ -47,14 +43,12 @@ const validateParam = function validateParam(
     isNaN(paramContent as unknown as number) &&
     isNaN(parseFloat(paramContent))
   ) {
-    console.log(
-      `Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`
-    );
+    // console.log(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
     throw new Error(
       `Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`
     );
   }
-  console.log(`Params OK`);
+  // console.log(`Params OK`);
   return true;
 };
 
