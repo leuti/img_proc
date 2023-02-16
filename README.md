@@ -8,7 +8,8 @@ To get started with this API, you'll need to follow these steps:
 
 1. Clone the repository to your local machine.
 2. Install dependencies by running `npm install`.
-3. Start the API server by running `npm start`.
+3. Run `npm run test` to build and test the API
+4. Run `npm run nodemon` to start the image processing API
 
 Once the server is running, you can make requests to it using a tool like cURL or Postman.
 
