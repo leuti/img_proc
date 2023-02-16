@@ -1,54 +1,54 @@
+// import required modules
 import sharp from 'sharp';
 import express from 'express';
 
+// function resizes a given image to a target size
 const resize = async function (
-  fullSource: string,
-  thumbSource: string,
-  width: string,
-  height: string,
-  res: express.Response
+  fullSource: string, // full path to source file
+  thumbSource: string, // full patch to thumb file
+  width: string, // target width of the thumb
+  height: string, // target height of the thumb
+  res: express.Response // express response object
 ): Promise<void> {
   try {
+    // resize image async using the sharp module
     await sharp(fullSource)
       .resize({
-        width: parseInt(width),
-        height: parseInt(height),
-        fit: sharp.fit.cover,
-        position: sharp.strategy.entropy,
+        width: parseInt(width), // target width
+        height: parseInt(height), // target height
+        fit: sharp.fit.cover, // cuts the image to fit into given size
+        position: sharp.strategy.entropy, //  most visually interesting part of the image will be retained
       })
-      .toFile(thumbSource);
-    // console.log('Resized image created');
-    res.status(200).sendFile(thumbSource);
+      .toFile(thumbSource); // save file in given location
+    res.status(200).sendFile(thumbSource); // send thumb back to end point
   } catch (error) {
-    console.error(error);
+    throw new Error(`Error resizing provided source image: ${error}`); // throw error if resize fails
   }
 };
 
-// Check if  params are provided and format is OK
+// Function to check if arams are provided and data type is OK
 const validateParam = function validateParam(
-  paramName: string,
-  paramContent: string,
-  type: string
+  paramName: string, // specifies the param to be validated (filename, width, height)
+  paramContent: string, // content of the above param
+  type: string // data type expected
 ): boolean {
-  // console.log(`Entered validateParam function with param name "${paramName}", content is "${paramContent}" and type "${type}"`);
+  // check if parameter has been provided
   if (!paramContent) {
-    // console.log(`Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`);
     throw new Error(
       `Parameter ${paramName} not provided. Please provide valid ${paramName} of type ${type}`
     );
   }
 
+  // check if approprate data type
   if (
     type === 'number' &&
     isNaN(paramContent as unknown as number) &&
     isNaN(parseFloat(paramContent))
   ) {
-    // console.log(`Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`);
     throw new Error(
       `Parameter "${paramName}" should be a number, but the value "${paramContent}" has been provided.`
     );
   }
-  // console.log(`Params OK`);
   return true;
 };
 

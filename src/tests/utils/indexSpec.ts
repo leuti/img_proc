@@ -1,3 +1,4 @@
+// import required modules and functions for testing
 import utils from '../../util/utils';
 
 describe('Test util function validateParam', () => {
