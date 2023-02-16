@@ -15,8 +15,8 @@ app.use('/api', routes);
 app.use(express.static(path.join(__dirname, 'assets')));
 
 // Route to serve thumbnail images located in the assets/thumb
-app.get('/thumb/:fileName', (req, res) => {
-  // res.sendFile(path.join(__dirname, 'assets', 'thumb', req.params.fileName));
+app.get('/thumb/:fileName', () => {
+  // all code handled in routes
 });
 
 // start server
