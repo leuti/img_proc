@@ -1,6 +1,11 @@
 // import required modules
 import sharp from 'sharp';
 import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import debug from 'debug'; // debug package
+
+const log = debug('http'); // create log object
 
 // function resizes a given image to a target size
 const resize = async function (
@@ -10,6 +15,18 @@ const resize = async function (
   height: string, // target height of the thumb
   res: express.Response // express response object
 ): Promise<void> {
+  const thumbDir = path.join(__dirname, '../../assets/thumb/'); // thumb directory
+
+  // check if thumb dir exists and create if not
+  fs.access(thumbDir, (err) => {
+    if (!err) {
+      log(thumbDir, 'directory already exists');
+    } else if (err.code === 'ENOENT') {
+      fs.mkdirSync(thumbDir);
+      log(thumbDir, 'created successfully... ');
+    }
+  });
+
   try {
     // resize image async using the sharp module
     await sharp(fullSource)
