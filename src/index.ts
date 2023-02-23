@@ -1,18 +1,16 @@
 // import required modules
 import express from 'express';
-import path from 'path';
+import debug from 'debug'; // debug package
 
 // import own routes modules
 import routes from './routes/index';
 
 const app = express(); // create express app
 const port = 3000; // set standard port
+const log = debug('http'); // create log object
 
 // is is the main root
 app.use('/api', routes);
-
-// Serves static files located in the assets directory
-app.use(express.static(path.join(__dirname, 'assets')));
 
 // Route to serve thumbnail images located in the assets/thumb
 app.get('/thumb/:fileName', () => {
@@ -21,7 +19,7 @@ app.get('/thumb/:fileName', () => {
 
 // start server
 app.listen(port, () => {
-  console.log(`server started at localhost:${port}`);
+  log(`server started at localhost:${port}`);
 });
 
 export default app;

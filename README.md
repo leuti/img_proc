@@ -13,6 +13,10 @@ To get started with this API, you'll need to follow these steps:
 
 Once the server is running, you can make requests to it using a tool like cURL or Postman.
 
+## Running in debug mode
+
+To run the API in debug mode run the following command: `npm run windowsDebug`
+
 ## API endpoints
 
 This is a project for a Udacity full stack course. The following endpoints are available in this API:

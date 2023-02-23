@@ -15,17 +15,20 @@
     "lint": "eslint src --ext .ts",
     "nodemon": "nodemon src/index.ts",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "test": "npm run build && npm run jasmine"
+    "test": "npm run build && npm run jasmine",
+    "windowsDebug": "@powershell -Command $env:DEBUG='*';node dist/index.js"
   },
   "author": "Daniel Leutwyler",
   "license": "ISC",
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/express": "^4.17.16",
     "@types/jasmine": "^4.3.1",
     "@types/sharp": "^0.31.1",
     "@types/typescript": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
+    "debug": "^4.3.4",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-vue": "^9.9.0",
